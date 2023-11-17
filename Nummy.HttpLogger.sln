@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34221.43
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nummy.HttpLogger", "Nummy.HttpLogger.csproj", "{62D6497E-EAF8-4B78-8068-20C8F92596F1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{62D6497E-EAF8-4B78-8068-20C8F92596F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62D6497E-EAF8-4B78-8068-20C8F92596F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62D6497E-EAF8-4B78-8068-20C8F92596F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62D6497E-EAF8-4B78-8068-20C8F92596F1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {527E6450-E1DC-4EE1-999B-0E649F8CB330}
+	EndGlobalSection
+EndGlobal

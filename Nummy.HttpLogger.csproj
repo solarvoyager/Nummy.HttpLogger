@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>Application monitoring and logging package for .net Core apps</Title>
+    <AnalysisLevel>none</AnalysisLevel>
+	<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+	 <PackageReadmeFile>README.md</PackageReadmeFile>
+	 <PackageIcon>icon.png</PackageIcon>
+	 <Version>1.0.0</Version>
+	 <Description>.NET Core library for log http request and responses in your application.</Description>
+	 <Copyright>SolarVoyager 2023</Copyright>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<None Include="LICENSE.txt" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+	  <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+	</ItemGroup>
+
+</Project>
