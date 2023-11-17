@@ -10,7 +10,7 @@
 	<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 	 <PackageReadmeFile>README.md</PackageReadmeFile>
 	 <PackageIcon>icon.png</PackageIcon>
-	 <Version>1.0.2</Version>
+	 <Version>1.0.3</Version>
 	 <Description>.NET Core library for log http request and responses in your application.</Description>
 	 <Copyright>SolarVoyager 2023</Copyright>
 	 <RepositoryUrl>https://github.com/solarvoyager/Nummy.HttpLogger</RepositoryUrl>
