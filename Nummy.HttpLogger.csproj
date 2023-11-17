@@ -10,9 +10,10 @@
 	<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 	 <PackageReadmeFile>README.md</PackageReadmeFile>
 	 <PackageIcon>icon.png</PackageIcon>
-	 <Version>1.0.0</Version>
+	 <Version>1.0.1</Version>
 	 <Description>.NET Core library for log http request and responses in your application.</Description>
 	 <Copyright>SolarVoyager 2023</Copyright>
+	 <RepositoryUrl>https://github.com/solarvoyager/Nummy.HttpLogger</RepositoryUrl>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -24,9 +25,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
-	  <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="icon.png">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
 	</ItemGroup>
 
 </Project>

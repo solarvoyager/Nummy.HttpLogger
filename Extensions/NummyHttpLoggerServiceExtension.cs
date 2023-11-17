@@ -1,24 +1,20 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Nummy.ExceptionHandler.Middlewares;
-using Nummy.ExceptionHandler.Models;
-using Nummy.HttpLogger.Services;
+using Nummy.HttpLogger.Middleware;
+using Nummy.HttpLogger.Models;
 
 namespace Nummy.HttpLogger.Extensions
 {
     public static class NummyHttpLoggerServiceExtension
     {
-        public static void AddNummyLogger(this IServiceCollection services, Action<NummyLoggerOptions>? options = null)
+        public static void AddNummyHttpLogger(this IServiceCollection services, Action<NummyHttpLoggerOptions> options)
         {
-            services.AddScoped<INummyHttpLogger, NummyHttpLogger>();
-
-            if (options is not null)
-                services.Configure(options);
+            services.Configure(options);
         }
 
-        public static void UsNummyLogger(IApplicationBuilder app)
+        public static void UsNummyHttpLogger(IApplicationBuilder app)
         {
-            app.UseMiddleware<NummyExceptionMiddleware>();
+            app.UseMiddleware<NummyHttpLoggerMiddleware>();
         }
 
     }
