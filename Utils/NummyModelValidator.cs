@@ -2,7 +2,7 @@
 
 namespace Nummy.HttpLogger.Utils;
 
-public static class NummyModelValidator
+internal static class NummyModelValidator
 {
     public static void ValidateNummyHttpLoggerOptions(NummyHttpLoggerOptions options)
     {

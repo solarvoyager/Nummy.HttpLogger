@@ -2,6 +2,5 @@
 
 public enum NummyHttpLoggerDatabaseType
 {
-    PostgreSql,
-    MongoDb
+    PostgreSql
 }

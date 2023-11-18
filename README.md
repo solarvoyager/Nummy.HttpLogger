@@ -27,15 +27,15 @@ using Nummy.HttpLogger.Extensions;
 ```csharp
 // .. other configurations
 
-services.AddNummyHttpLogger(options =>
+builder.Services.AddNummyHttpLogger(options =>
 {
     // Configure options here
     // Example: 
     options.EnableRequestLogging = true;
-    options.EnableResponseLoggging = true;
+    options.EnableResponseLogging = true;
     options.ExcludeContainingPaths = new []{"api/user/login", "statistics", "user/create" };
     options.DatabaseType = NummyHttpLoggerDatabaseType.PostgreSql;
-    options.DatabaseConnectionString = "your-database-connection-string"
+    options.DatabaseConnectionString = "your-database-connection-string";
 });
 
 // .. other configurations

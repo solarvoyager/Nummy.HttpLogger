@@ -5,13 +5,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-        <Title>Application monitoring and logging package for .net Core apps</Title>
+        <Title>.NET Core library for log http request and responses in your application.</Title>
         <AnalysisLevel>none</AnalysisLevel>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>icon.png</PackageIcon>
-        <Version>1.0.3</Version>
-        <Description>.NET Core library for log http request and responses in your application.</Description>
+        <Version>1.0.4</Version>
+        <Description>Request &amp; Response logging in your application. </Description>
         <Copyright>SolarVoyager 2023</Copyright>
         <RepositoryUrl>https://github.com/solarvoyager/Nummy.HttpLogger</RepositoryUrl>
     </PropertyGroup>
@@ -26,6 +26,13 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.11"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.11"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.11">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -33,6 +40,8 @@
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>
         </None>
+
     </ItemGroup>
+
 
 </Project>
