@@ -3,19 +3,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Nummy.HttpLogger.Middleware;
 using Nummy.HttpLogger.Models;
 
-namespace Nummy.HttpLogger.Extensions
+namespace Nummy.HttpLogger.Extensions;
+
+public static class NummyHttpLoggerServiceExtension
 {
-    public static class NummyHttpLoggerServiceExtension
+    public static void AddNummyHttpLogger(this IServiceCollection services, Action<NummyHttpLoggerOptions> options)
     {
-        public static void AddNummyHttpLogger(this IServiceCollection services, Action<NummyHttpLoggerOptions> options)
-        {
-            services.Configure(options);
-        }
+        services.Configure(options);
+    }
 
-        public static void UsNummyHttpLogger(IApplicationBuilder app)
-        {
-            app.UseMiddleware<NummyHttpLoggerMiddleware>();
-        }
-
+    public static void UsNummyHttpLogger(IApplicationBuilder app)
+    {
+        app.UseMiddleware<NummyHttpLoggerMiddleware>();
     }
 }

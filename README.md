@@ -1,5 +1,3 @@
-
-
 # Nummy Http Request & Response Logging package for .NET Core
 
 [![NuGet Version](https://img.shields.io/nuget/v/Nummy.HttpLogger.svg)](https://www.nuget.org/packages/Nummy.HttpLogger/)
@@ -19,11 +17,13 @@ Install-Package Nummy.HttpLogger
 ```
 
 ## Getting Started
+
 In your `Program.cs` file add the following line:
 
 ```csharp
 using Nummy.HttpLogger.Extensions;
 ```
+
 ```csharp
 // .. other configurations
 
@@ -41,11 +41,13 @@ services.AddNummyHttpLogger(options =>
 // .. other configurations
 var app = builder.Build();
 ```
+
 Use Middleware: In the Configure method of your Startup.cs file, add the following line:
 
 ```csharp
 using Nummy.HttpLogger.Extensions;
 ```
+
 ```csharp
 var app = builder.Build();
 
@@ -55,7 +57,9 @@ app.UseNummyHttpLogger();
 
 // .. other middleware
 ```
+
 Now, your application is set up to log http request and responses using the Nummy Http Logger.
 
 ## License
+
 This library is licensed under the MIT License.
