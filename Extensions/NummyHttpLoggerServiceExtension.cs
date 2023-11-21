@@ -21,7 +21,7 @@ public static class NummyHttpLoggerServiceExtension
 
         services.Configure(options);
 
-        services.AddDbContext<NummyDataContext>(dbOptions =>
+        services.AddDbContext<NummyHttpLoggerDataContext>(dbOptions =>
             dbOptions.UseNpgsql(httpLoggerOptions.DatabaseConnectionString));
 
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -31,7 +31,7 @@ public static class NummyHttpLoggerServiceExtension
         // Automatically apply migrations during startup
         using var serviceScope = services.BuildServiceProvider().CreateScope();
         {
-            var dbContext = serviceScope.ServiceProvider.GetRequiredService<NummyDataContext>();
+            var dbContext = serviceScope.ServiceProvider.GetRequiredService<NummyHttpLoggerDataContext>();
 
             // Ensure the database exists, and create it if not
             dbContext.Database.EnsureCreated();

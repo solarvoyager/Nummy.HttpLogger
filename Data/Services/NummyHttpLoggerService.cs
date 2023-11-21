@@ -1,18 +1,20 @@
-﻿using Nummy.HttpLogger.Data.Entitites;
-using Nummy.HttpLogger.Data.DataContext;
+﻿using Nummy.HttpLogger.Data.DataContext;
+using Nummy.HttpLogger.Data.Entitites;
 
 namespace Nummy.HttpLogger.Data.Services;
 
 internal class NummyHttpLoggerService : INummyHttpLoggerService
 {
-    private readonly NummyDataContext _nummyDataContext;
+    private readonly NummyHttpLoggerDataContext _nummyDataContext;
 
-    public NummyHttpLoggerService(NummyDataContext nummyDataContext)
+    public NummyHttpLoggerService(NummyHttpLoggerDataContext nummyDataContext)
     {
         _nummyDataContext = nummyDataContext;
     }
 
-    public async Task LogRequestAsync(string requestBody, string requestPath, string remoteIpAddress, string httpLogGuid)
+    public async Task LogRequestAsync(string requestBody, string requestMethod, string requestPath,
+        string remoteIpAddress,
+        string httpLogGuid)
     {
         var data = new NummyRequestLog
         {
@@ -21,6 +23,7 @@ internal class NummyHttpLoggerService : INummyHttpLoggerService
             DeletedAt = null,
             IsDeleted = false,
             Body = requestBody,
+            Method = requestMethod,
             Path = requestPath,
             RemoteIpAddress = remoteIpAddress
         };

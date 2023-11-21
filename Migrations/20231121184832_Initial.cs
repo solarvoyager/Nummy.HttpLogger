@@ -23,7 +23,9 @@ namespace Nummy.HttpLogger.Migrations
                     DeletedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     Body = table.Column<string>(type: "text", nullable: false),
-                    Path = table.Column<string>(type: "text", nullable: false)
+                    Method = table.Column<string>(type: "text", nullable: false),
+                    Path = table.Column<string>(type: "text", nullable: false),
+                    RemoteIpAddress = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -2,6 +2,8 @@
 
 internal interface INummyHttpLoggerService
 {
-    Task LogRequestAsync(string requestBody, string requestPath, string remoteIpAddress, string httpLogGuid);
+    Task LogRequestAsync(string requestBody, string requestMethod, string requestPath, string remoteIpAddress,
+        string httpLogGuid);
+
     Task LogResponseAsync(string responseBody, string httpLogGuid);
 }

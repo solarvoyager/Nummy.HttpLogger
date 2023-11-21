@@ -22,6 +22,7 @@ In your `Program.cs` file add the following line:
 
 ```csharp
 using Nummy.HttpLogger.Extensions;
+using Nummy.HttpLogger.Models;
 ```
 
 ```csharp
@@ -33,19 +34,13 @@ builder.Services.AddNummyHttpLogger(options =>
     // Example: 
     options.EnableRequestLogging = true;
     options.EnableResponseLogging = true;
-    options.ExcludeContainingPaths = new []{"api/user/login", "statistics", "user/create" };
+    options.ExcludeContainingPaths = new []{ "swagger", "api/user/login", "user/create" };
     options.DatabaseType = NummyHttpLoggerDatabaseType.PostgreSql;
     options.DatabaseConnectionString = "your-database-connection-string";
 });
 
 // .. other configurations
 var app = builder.Build();
-```
-
-Use Middleware: In the Configure method of your Startup.cs file, add the following line:
-
-```csharp
-using Nummy.HttpLogger.Extensions;
 ```
 
 ```csharp

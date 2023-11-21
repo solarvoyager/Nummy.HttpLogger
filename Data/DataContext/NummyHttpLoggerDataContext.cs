@@ -3,9 +3,9 @@ using Nummy.HttpLogger.Data.Entitites;
 
 namespace Nummy.HttpLogger.Data.DataContext;
 
-internal class NummyDataContext : DbContext
+internal class NummyHttpLoggerDataContext : DbContext
 {
-    public NummyDataContext(DbContextOptions<NummyDataContext> options) : base(options)
+    public NummyHttpLoggerDataContext(DbContextOptions<NummyHttpLoggerDataContext> options) : base(options)
     {
     }
 

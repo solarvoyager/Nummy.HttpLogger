@@ -11,7 +11,7 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>icon.png</PackageIcon>
         <Version>1.0.4</Version>
-        <Description>Request &amp; Response logging in your application. </Description>
+        <Description>Request &amp; Response logging in your application.</Description>
         <Copyright>SolarVoyager 2023</Copyright>
         <RepositoryUrl>https://github.com/solarvoyager/Nummy.HttpLogger</RepositoryUrl>
     </PropertyGroup>

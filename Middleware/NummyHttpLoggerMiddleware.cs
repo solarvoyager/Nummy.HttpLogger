@@ -47,14 +47,14 @@ internal class NummyHttpLoggerMiddleware
         var originalBody = context.Response.Body;
         await using var newMemoryStream = new MemoryStream();
         context.Response.Body = newMemoryStream;
-        
+
         // Continue processing the request
         await _next(context);
 
         // Log the response body
         // context.Response.ContentLength is > 0 && 
         if (_options.EnableResponseLogging)
-            await ReadAndLogResponseBody(context,originalBody, newMemoryStream, httpLogGuid);
+            await ReadAndLogResponseBody(context, originalBody, newMemoryStream, httpLogGuid);
 
         // Measure end time
         var endTime = Stopwatch.GetTimestamp();
@@ -63,7 +63,7 @@ internal class NummyHttpLoggerMiddleware
         var elapsedMs = (endTime - startTime) * 1000.0 / Stopwatch.Frequency;
     }
 
-    private static async Task ReadAndLogResponseBody(HttpContext context,Stream originalBody,
+    private static async Task ReadAndLogResponseBody(HttpContext context, Stream originalBody,
         MemoryStream newMemoryStream, string httpLogGuid)
     {
         var service = context.RequestServices.GetRequiredService<INummyHttpLoggerService>();
@@ -74,7 +74,7 @@ internal class NummyHttpLoggerMiddleware
         await service.LogResponseAsync(responseBodyText, httpLogGuid);
 
         newMemoryStream.Seek(0, SeekOrigin.Begin);
-        
+
         context.Response.Body = originalBody;
         await context.Response.Body.WriteAsync(newMemoryStream.ToArray());
     }
@@ -84,7 +84,7 @@ internal class NummyHttpLoggerMiddleware
         var service = context.RequestServices.GetRequiredService<INummyHttpLoggerService>();
 
         context.Request.EnableBuffering();
-        
+
         var requestBodyStream = new MemoryStream();
         await context.Request.Body.CopyToAsync(requestBodyStream);
 
@@ -92,7 +92,8 @@ internal class NummyHttpLoggerMiddleware
 
         var requestBodyText = await new StreamReader(requestBodyStream).ReadToEndAsync();
         var remoteIp = context.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
-        await service.LogRequestAsync(requestBodyText, context.Request.Path, remoteIp??"0.0.0.0", httpLogGuid);
+        await service.LogRequestAsync(requestBodyText, context.Request.Method, context.Request.Path,
+            remoteIp ?? "0.0.0.0", httpLogGuid);
 
         context.Request.Body.Seek(0, SeekOrigin.Begin);
     }
