@@ -34,12 +34,12 @@ public static class NummyHttpLoggerServiceExtension
             var dbContext = serviceScope.ServiceProvider.GetRequiredService<NummyHttpLoggerDataContext>();
 
             // Ensure the database exists, and create it if not
-            dbContext.Database.EnsureCreated();
+            //dbContext.Database.EnsureCreated();
 
             if (dbContext.Database.GetPendingMigrations().Any())
             {
                 // Apply pending migrations
-                // dbContext.Database.Migrate();
+                dbContext.Database.Migrate();
             }
         }
 

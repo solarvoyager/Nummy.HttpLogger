@@ -6,6 +6,7 @@
 ## Overview
 
 This is a .NET Core library for http request and response logging in your application.
+Just set connection string of your database then package will create and manage required tables for itself.
 
 ## Installation
 
@@ -36,7 +37,7 @@ builder.Services.AddNummyHttpLogger(options =>
     options.EnableResponseLogging = true;
     options.ExcludeContainingPaths = new []{ "swagger", "api/user/login", "user/create" };
     options.DatabaseType = NummyHttpLoggerDatabaseType.PostgreSql;
-    options.DatabaseConnectionString = "your-database-connection-string";
+    options.DatabaseConnectionString = "Host=localhost;Port=5432;Database=nummy_db;Username=postgres;Password=postgres;IncludeErrorDetail=true;";
 });
 
 // .. other configurations
@@ -54,6 +55,9 @@ app.UseNummyHttpLogger();
 ```
 
 Now, your application is set up to log http request and responses using the Nummy Http Logger.
+
+Note: This library logs all request to your api during lifetime of project. 
+Please make sure to exclude unused requests for example starting with "swagger"
 
 ## License
 
