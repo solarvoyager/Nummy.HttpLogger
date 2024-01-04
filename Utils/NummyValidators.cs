@@ -1,12 +1,12 @@
-﻿using Nummy.HttpLogger.Models;
+﻿using Nummy.HttpLogger.Utils.Exceptions;
 
 namespace Nummy.HttpLogger.Utils;
 
-internal static class NummyModelValidator
+internal static class NummyValidators
 {
     public static void ValidateNummyHttpLoggerOptions(NummyHttpLoggerOptions options)
     {
-        if (string.IsNullOrEmpty(options.DatabaseConnectionString?.Trim()))
+        if (string.IsNullOrWhiteSpace(options.DsnUrl))
             throw new NummyHttpLoggerOptionsValidationException();
     }
 }

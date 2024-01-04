@@ -1,6 +1,7 @@
 # Nummy Http Request & Response Logging package for .NET Core
 
 [![NuGet Version](https://img.shields.io/nuget/v/Nummy.HttpLogger.svg)](https://www.nuget.org/packages/Nummy.HttpLogger/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/Nummy.HttpLogger.svg)](https://www.nuget.org/packages/Nummy.HttpLogger/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## Overview
@@ -10,14 +11,25 @@ Just set connection string of your database then package will create and manage 
 
 ## Installation
 
-https://www.nuget.org/packages/Nummy.HttpLogger
-Or install the package via NuGet Package Manager Console:
+[Nuget - Nummy.HttpLogger](https://www.nuget.org/packages/Nummy.HttpLogger)
+
+or install the package via NuGet Package Manager Console:
 
 ```bash
 Install-Package Nummy.HttpLogger
 ```
 
 ## Getting Started
+
+#### 1. Run Nummy on your Docker
+
+// under construction
+
+#### 2. Get DSN url from your Docker Nummy instance
+
+// under construction
+
+#### 3. Configure your application
 
 In your `Program.cs` file add the following line:
 
@@ -31,13 +43,11 @@ using Nummy.HttpLogger.Models;
 
 builder.Services.AddNummyHttpLogger(options =>
 {
-    // Configure options here
-    // Example: 
     options.EnableRequestLogging = true;
     options.EnableResponseLogging = true;
+    // exclude logging from requests which contains these patterns
     options.ExcludeContainingPaths = new []{ "swagger", "api/user/login", "user/create" };
-    options.DatabaseType = NummyHttpLoggerDatabaseType.PostgreSql;
-    options.DatabaseConnectionString = "Host=localhost;Port=5432;Database=nummy_db;Username=postgres;Password=postgres;IncludeErrorDetail=true;";
+    options.DsnUrl = "your-nummy-dsn-url";
 });
 
 // .. other configurations
@@ -54,9 +64,9 @@ app.UseNummyHttpLogger();
 // .. other middleware
 ```
 
-Now, your application is set up to log http request and responses using the Nummy Http Logger.
+#### 4. Now, your application is set up to log http request and responses using the Nummy Http Logger.
 
-Note: This library logs all request to your api during lifetime of project. 
+Note: This library logs all request to your api during lifetime of project.
 Please make sure to exclude unused requests for example starting with "swagger"
 
 ## License

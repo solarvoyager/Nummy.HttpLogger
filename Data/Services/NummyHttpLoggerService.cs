@@ -1,46 +1,20 @@
-﻿using Nummy.HttpLogger.Data.DataContext;
+﻿using System.Net.Http.Json;
 using Nummy.HttpLogger.Data.Entitites;
+using Nummy.HttpLogger.Utils;
 
 namespace Nummy.HttpLogger.Data.Services;
 
-internal class NummyHttpLoggerService : INummyHttpLoggerService
+internal class NummyHttpLoggerService(IHttpClientFactory clientFactory) : INummyHttpLoggerService
 {
-    private readonly NummyHttpLoggerDataContext _nummyDataContext;
+    private readonly HttpClient _client = clientFactory.CreateClient(NummyConstants.ClientName);
 
-    public NummyHttpLoggerService(NummyHttpLoggerDataContext nummyDataContext)
+    public async Task LogRequestAsync(NummyRequestLog requestLog)
     {
-        _nummyDataContext = nummyDataContext;
+        await _client.PostAsJsonAsync(NummyConstants.RequestLogAddUrl, requestLog);
     }
 
-    public async Task LogRequestAsync(string requestBody, string requestMethod, string requestPath,
-        string remoteIpAddress,
-        string httpLogGuid)
+    public async Task LogResponseAsync(NummyResponseLog responseLog)
     {
-        var data = new NummyRequestLog
-        {
-            HttpLogGuid = httpLogGuid,
-            CreatedAt = DateTimeOffset.Now,
-            DeletedAt = null,
-            IsDeleted = false,
-            Body = requestBody,
-            Method = requestMethod,
-            Path = requestPath,
-            RemoteIpAddress = remoteIpAddress
-        };
-
-        await _nummyDataContext.NummyRequestLogs.AddAsync(data);
-        await _nummyDataContext.SaveChangesAsync();
-    }
-
-    public async Task LogResponseAsync(string responseBody, string httpLogGuid)
-    {
-        var data = new NummyResponseLog
-        {
-            HttpLogGuid = httpLogGuid,
-            ResponseBody = responseBody
-        };
-
-        await _nummyDataContext.NummyResponseLogs.AddAsync(data);
-        await _nummyDataContext.SaveChangesAsync();
+        await _client.PostAsJsonAsync(NummyConstants.ResponseLogAddUrl, responseLog);
     }
 }

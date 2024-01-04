@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Nummy.HttpLogger.Data.DataContext;
 using Nummy.HttpLogger.Data.Services;
 using Nummy.HttpLogger.Middleware;
-using Nummy.HttpLogger.Models;
 using Nummy.HttpLogger.Utils;
 
 namespace Nummy.HttpLogger.Extensions;
@@ -17,31 +14,18 @@ public static class NummyHttpLoggerServiceExtension
         var httpLoggerOptions = new NummyHttpLoggerOptions();
         options.Invoke(httpLoggerOptions);
 
-        NummyModelValidator.ValidateNummyHttpLoggerOptions(httpLoggerOptions);
+        NummyValidators.ValidateNummyHttpLoggerOptions(httpLoggerOptions);
 
         services.Configure(options);
 
-        services.AddDbContext<NummyHttpLoggerDataContext>(dbOptions =>
-            dbOptions.UseNpgsql(httpLoggerOptions.DatabaseConnectionString));
+        services.AddSingleton<INummyHttpLoggerService, NummyHttpLoggerService>();
 
-        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
-        services.AddScoped<INummyHttpLoggerService, NummyHttpLoggerService>();
-
-        // Automatically apply migrations during startup
-        using var serviceScope = services.BuildServiceProvider().CreateScope();
+        services.AddHttpClient(NummyConstants.ClientName, config =>
         {
-            var dbContext = serviceScope.ServiceProvider.GetRequiredService<NummyHttpLoggerDataContext>();
-
-            // Ensure the database exists, and create it if not
-            //dbContext.Database.EnsureCreated();
-
-            if (dbContext.Database.GetPendingMigrations().Any())
-            {
-                // Apply pending migrations
-                dbContext.Database.Migrate();
-            }
-        }
+            config.BaseAddress = new Uri(httpLoggerOptions.DsnUrl!);
+            config.Timeout = new TimeSpan(0, 0, 30);
+            config.DefaultRequestHeaders.Clear();
+        });
 
         return services;
     }

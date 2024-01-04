@@ -2,7 +2,7 @@
 
 internal class NummyResponseLog
 {
-    public int NummyResponseLogId { get; set; }
-    public required string HttpLogGuid { get; set; }
-    public required string ResponseBody { get; set; }
+    public required Guid HttpLogId { get; set; }
+    public required string Body { get; set; }
+    public required int StatusCode { get; set; }
 }
