@@ -105,8 +105,6 @@ internal class NummyHttpLoggerMiddleware
             Body = requestBodyText,
             TraceIdentifier = context.TraceIdentifier,
             Method = context.Request.Method,
-            CreatedAt = DateTimeOffset.Now,
-            IsDeleted = false,
             HttpLogId = httpLogGuid,
             Path = context.Request.Path,
             RemoteIp = remoteIp
