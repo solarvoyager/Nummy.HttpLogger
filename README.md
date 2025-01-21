@@ -21,15 +21,11 @@ Install-Package Nummy.HttpLogger
 
 ## Getting Started
 
-#### 1. Run Nummy on your Docker
+#### 1. Run Nummy on your Docker and get DSN url of your local instance
 
-// under construction
+[Here is tutorial](https://github.com/solarvoyager/Nummy/blob/fb5247f0b977d1d20424abc4c87f8a1c0d621bcd/README.md)
 
-#### 2. Get DSN url from your Docker Nummy instance
-
-// under construction
-
-#### 3. Configure your application
+#### 2. Configure your application
 
 In your `Program.cs` file add the following line:
 
@@ -64,7 +60,7 @@ app.UseNummyHttpLogger();
 // .. other middleware
 ```
 
-#### 4. Now, your application is set up to log http request and responses using the Nummy Http Logger.
+#### 3. Now, your application is set up to log http request and responses using the Nummy Http Logger.
 
 Note: This library logs all request to your api during lifetime of project.
 Please make sure to exclude unused requests for example starting with "swagger"
