@@ -60,6 +60,9 @@ app.UseNummyHttpLogger();
 // .. other middleware
 ```
 
+> **Attetion:** if you are using [Nummy.ExceptionHandler](https://www.nuget.org/packages/Nummy.ExceptionHandler),
+> make sure to first register NummyHttpLogger and then NummyExceptionHandler.
+
 #### 3. Now, your application is set up to log http request and responses using the Nummy Http Logger.
 
 Note: This library logs all request to your api during lifetime of project.
