@@ -23,7 +23,7 @@ Install-Package Nummy.HttpLogger
 
 #### 1. Run Nummy on your Docker and get DSN url of your local instance
 
-[Here is tutorial](https://github.com/solarvoyager/Nummy/blob/fb5247f0b977d1d20424abc4c87f8a1c0d621bcd/README.md)
+[Here is tutorial](https://github.com/solarvoyager/Nummy/blob/master/README.md)
 
 #### 2. Configure your application
 
