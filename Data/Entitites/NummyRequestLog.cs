@@ -3,6 +3,7 @@
 internal class NummyRequestLog
 {
     public required Guid HttpLogId { get; set; }
+    public required string ApplicationId { get; set; }
     public required string TraceIdentifier { get; set; }
     public required string Body { get; set; }
     public required string Method { get; set; }

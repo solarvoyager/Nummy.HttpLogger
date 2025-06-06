@@ -10,7 +10,7 @@
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>icon.png</PackageIcon>
-        <Version>1.5.0</Version>
+        <Version>1.6.0</Version>
         <Description>Request &amp; Response logging in your application.</Description>
         <Copyright>SolarVoyager 2023</Copyright>
         <RepositoryUrl>https://github.com/solarvoyager/Nummy.HttpLogger</RepositoryUrl>
@@ -25,8 +25,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2"/>
-        <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+        <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.5" />
     </ItemGroup>
 
     <ItemGroup>

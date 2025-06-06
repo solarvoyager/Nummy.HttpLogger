@@ -10,17 +10,8 @@ using Nummy.HttpLogger.Utils;
 
 namespace Nummy.HttpLogger.Middleware;
 
-internal class NummyHttpLoggerMiddleware
+internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<NummyHttpLoggerOptions> options)
 {
-    private readonly RequestDelegate _next;
-    private readonly NummyHttpLoggerOptions _options;
-
-    public NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<NummyHttpLoggerOptions> options)
-    {
-        _next = next;
-        _options = options.Value;
-    }
-
     public async Task InvokeAsync(HttpContext context)
     {
         // Measure start time
@@ -28,12 +19,12 @@ internal class NummyHttpLoggerMiddleware
 
         // Check exclusions
         var requestPath = context.Request.Path.Value;
-        var isExcluded = _options.ExcludeContainingPaths
+        var isExcluded = options.Value.ExcludeContainingPaths
             .Any(path => requestPath.Contains(path, StringComparison.OrdinalIgnoreCase));
 
         if (isExcluded)
         {
-            await _next(context);
+            await next(context);
             return;
         }
 
@@ -42,8 +33,8 @@ internal class NummyHttpLoggerMiddleware
 
         // Log the request body
         // context.Request.ContentLength is > 0 && 
-        if (_options.EnableRequestLogging)
-            await ReadAndLogRequestBody(context, httpLogId);
+        if (options.Value.EnableRequestLogging)
+            await ReadAndLogRequestBody(context, httpLogId, options.Value.ApplicationId);
 
         // Create memory stream to store response body
         var originalBody = context.Response.Body;
@@ -51,11 +42,11 @@ internal class NummyHttpLoggerMiddleware
         context.Response.Body = newMemoryStream;
 
         // Continue processing the request
-        await _next(context);
+        await next(context);
 
         // Log the response body
         // context.Response.ContentLength is > 0 && 
-        if (_options.EnableResponseLogging)
+        if (options.Value.EnableResponseLogging)
             await ReadAndLogResponseBody(context, originalBody, newMemoryStream, httpLogId);
 
         // Measure end time
@@ -86,7 +77,7 @@ internal class NummyHttpLoggerMiddleware
         await context.Response.Body.WriteAsync(newMemoryStream.ToArray());
     }
 
-    private static async Task ReadAndLogRequestBody(HttpContext context, Guid httpLogGuid)
+    private static async Task ReadAndLogRequestBody(HttpContext context, Guid httpLogGuid, string applicationId)
     {
         var service = context.RequestServices.GetRequiredService<INummyHttpLoggerService>();
 
@@ -104,6 +95,7 @@ internal class NummyHttpLoggerMiddleware
         {
             Body = requestBodyText,
             TraceIdentifier = context.TraceIdentifier,
+            ApplicationId = applicationId,
             Method = context.Request.Method,
             HttpLogId = httpLogGuid,
             Path = context.Request.Path,

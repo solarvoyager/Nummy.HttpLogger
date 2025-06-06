@@ -9,6 +9,8 @@
 This is a .NET Core library for http request and response logging in your application.
 Just set connection string of your database then package will create and manage required tables for itself.
 
+---
+
 ## Installation
 
 [Nuget - Nummy.HttpLogger](https://www.nuget.org/packages/Nummy.HttpLogger)
@@ -21,11 +23,13 @@ Install-Package Nummy.HttpLogger
 
 ## Getting Started
 
-#### 1. Run Nummy on your Docker and get DSN url of your local instance
+#### 1. Run Nummy on your Docker
 
 [Here is tutorial](https://github.com/solarvoyager/Nummy/blob/master/README.md)
 
-#### 2. Configure your application
+#### 2. Add your application in Nummy
+
+#### 3. Configure in your project
 
 In your `Program.cs` file add the following line:
 
@@ -43,7 +47,9 @@ builder.Services.AddNummyHttpLogger(options =>
     options.EnableResponseLogging = true;
     // exclude logging from requests which contains these patterns
     options.ExcludeContainingPaths = new []{ "swagger", "api/user/login", "user/create" };
-    options.DsnUrl = "your-nummy-dsn-url";
+    // from your application's configuration section in Nummy
+    options.NummyServiceUrl = "your-nummy-service-url";
+    options.ApplicationId = "your-nummy-application-id";
 });
 
 // .. other configurations
@@ -60,13 +66,13 @@ app.UseNummyHttpLogger();
 // .. other middleware
 ```
 
-> **Attetion:** if you are using [Nummy.ExceptionHandler](https://www.nuget.org/packages/Nummy.ExceptionHandler),
+> **Attention:** if you are using [Nummy.ExceptionHandler](https://www.nuget.org/packages/Nummy.ExceptionHandler),
 > make sure to first register NummyHttpLogger and then NummyExceptionHandler.
 
-#### 3. Now, your application is set up to log http request and responses using the Nummy Http Logger.
+#### 4. Now, your application is set up to log http request and responses using the Nummy Http Logger.
 
-Note: This library logs all request to your api during lifetime of project.
-Please make sure to exclude unused requests for example starting with "swagger"
+> **Attention 2:** This library logs all request to your api during lifetime of project.
+> Please make sure to exclude unused requests for example starting with "swagger"
 
 ## License
 

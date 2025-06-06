@@ -6,7 +6,17 @@ internal static class NummyValidators
 {
     public static void ValidateNummyHttpLoggerOptions(NummyHttpLoggerOptions options)
     {
-        if (string.IsNullOrWhiteSpace(options.DsnUrl))
-            throw new NummyHttpLoggerOptionsValidationException();
+        var isValidApplicationId = string.IsNullOrWhiteSpace(options.ApplicationId) ||
+                                   Guid.TryParse(options.ApplicationId, out var guid) == false ||
+                                   guid == Guid.Empty;
+        
+        var isValidNummyServiceUrl = string.IsNullOrWhiteSpace(options.NummyServiceUrl) ||
+                                     Uri.TryCreate(options.NummyServiceUrl, UriKind.Absolute, out var uri) == false;
+        
+        if (!isValidApplicationId)
+            throw new ApplicationIdValidationException();
+        
+        if(!isValidNummyServiceUrl)
+            throw new NummyServiceUrlValidationException();
     }
 }
