@@ -10,7 +10,7 @@
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageIcon>icon.png</PackageIcon>
-        <Version>1.7.0</Version>
+        <Version>1.8.0</Version>
         <Description>Request &amp; Response logging in your application.</Description>
         <Copyright>SolarVoyager 2023</Copyright>
         <RepositoryUrl>https://github.com/solarvoyager/Nummy.HttpLogger</RepositoryUrl>

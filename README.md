@@ -45,8 +45,12 @@ builder.Services.AddNummyHttpLogger(options =>
 {
     options.EnableRequestLogging = true;
     options.EnableResponseLogging = true;
-    // exclude logging from requests which contains these patterns
+    // exclude urls containing strings
     options.ExcludeContainingPaths = new []{ "swagger", "api/user/login", "user/create" };
+    // mask sensetive headers (labeled as [MASKED] in Nummy)
+    options.MaskHeaders = new []{ "Authorization" }
+    // max read response body length in bytes
+    options.MaxBodyLength = 32768 // 32 KB
     // from your application's configuration section in Nummy
     options.NummyServiceUrl = "your-nummy-service-url";
     options.ApplicationId = "your-nummy-application-id";
