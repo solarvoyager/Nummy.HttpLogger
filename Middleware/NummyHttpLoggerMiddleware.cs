@@ -101,26 +101,28 @@ internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<N
                contentType.Contains("multipart/");
     }
 
-    private static string MaskHeaders(IHeaderDictionary headers, NummyHttpLoggerOptions options)
+    private static List<NummyHeader> MaskHeaders(IHeaderDictionary headers, NummyHttpLoggerOptions options)
     {
-        // Simple example: create a small string of headers and mask Authorization/Cookie
-        var sb = new StringBuilder();
-        foreach (var kv in headers)
+        var copiedHeaders = new List<NummyHeader>();
+        foreach (var (key, value) in headers)
         {
-            var key = kv.Key;
-            var val = kv.Value.ToString();
+            var val = value.ToString();
 
-            var shouldMask = options.MaskHeaders.Contains(kv.Key);
+            var shouldMask = options.MaskHeaders.Contains(key);
             
             if (shouldMask)
             {
                 val = "[MASKED]";
             }
 
-            sb.AppendLine($"{key}: {val}");
+            copiedHeaders.Add(new NummyHeader
+            {
+                Key = key,
+                Value = val
+            });
         }
 
-        return sb.ToString();
+        return copiedHeaders;
     }
 
     private static async Task ReadAndLogRequestBodyAsync(

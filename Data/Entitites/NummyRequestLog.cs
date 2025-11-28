@@ -9,5 +9,5 @@ internal class NummyRequestLog
     public required string Method { get; set; }
     public required string Path { get; set; }
     public string? RemoteIp { get; set; }
-    public string? Headers { get; set; }
+    public List<NummyHeader> Headers { get; set; } = [];
 }

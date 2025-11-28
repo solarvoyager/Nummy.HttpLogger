@@ -6,5 +6,5 @@ internal class NummyResponseLog
     public string? Body { get; set; }
     public required int StatusCode { get; set; }
     public required long DurationMs { get; set; }
-    public string? Headers { get; set; }
+    public List<NummyHeader> Headers { get; set; } = [];
 }
