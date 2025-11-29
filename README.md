@@ -34,7 +34,6 @@ In your `Program.cs` file add the following line:
 
 ```csharp
 using Nummy.HttpLogger.Extensions;
-using Nummy.HttpLogger.Models;
 ```
 
 ```csharp
