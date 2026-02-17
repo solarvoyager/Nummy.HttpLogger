@@ -1,8 +1,9 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Nummy.HttpLogger.Data.Entitites;
 using Nummy.HttpLogger.Data.Services;
@@ -10,11 +11,13 @@ using Nummy.HttpLogger.Utils;
 
 namespace Nummy.HttpLogger.Middleware;
 
-internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<NummyHttpLoggerOptions> options)
+internal sealed class NummyHttpLoggerMiddleware(
+    RequestDelegate next,
+    IOptions<NummyHttpLoggerOptions> options,
+    ILogger<NummyHttpLoggerMiddleware> logger)
 {
     public async Task InvokeAsync(HttpContext context)
     {
-        // Exclusions (case-insensitive)
         var pathValue = context.Request.Path.HasValue ? context.Request.Path.Value : string.Empty;
 
         var isExcluded = options.Value.ExcludeContainingPaths
@@ -29,7 +32,6 @@ internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<N
         var stopwatch = Stopwatch.StartNew();
         var httpLogId = Guid.NewGuid();
 
-        // Log request (non-blocking pattern recommended — here we await but swallow errors)
         if (options.Value.EnableRequestLogging)
         {
             try
@@ -38,23 +40,22 @@ internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<N
             }
             catch (Exception ex)
             {
-                // Don't fail the request if logging fails. Consider ILogger here.
+                logger.LogDebug(ex, "Failed to log HTTP request to Nummy service");
             }
         }
 
-        var originalResponseBody = context.Response.Body;
-        await using var bufferStream = new MemoryStream();
-        context.Response.Body = bufferStream;
-
-        try
+        if (options.Value.EnableResponseLogging)
         {
-            // Execute next middleware
-            await next(context);
+            var originalResponseBody = context.Response.Body;
+            await using var bufferStream = new MemoryStream();
+            context.Response.Body = bufferStream;
 
-            stopwatch.Stop();
-
-            if (options.Value.EnableResponseLogging)
+            try
             {
+                await next(context);
+
+                stopwatch.Stop();
+
                 try
                 {
                     await ReadAndLogResponseBodyAsync(
@@ -68,20 +69,20 @@ internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<N
                 }
                 catch (Exception ex)
                 {
-                    // swallow; do not break response
+                    logger.LogDebug(ex, "Failed to log HTTP response to Nummy service");
+                    bufferStream.Seek(0, SeekOrigin.Begin);
+                    await bufferStream.CopyToAsync(originalResponseBody);
                 }
             }
-            else
+            finally
             {
-                // If we're not logging response, just copy it back
-                bufferStream.Seek(0, SeekOrigin.Begin);
-                await bufferStream.CopyToAsync(originalResponseBody);
+                context.Response.Body = originalResponseBody;
             }
         }
-        finally
+        else
         {
-            // Ensure Response.Body is always restored
-            context.Response.Body = originalResponseBody;
+            await next(context);
+            stopwatch.Stop();
         }
     }
 
@@ -90,15 +91,9 @@ internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<N
         if (string.IsNullOrEmpty(contentType)) return false;
         contentType = contentType.ToLowerInvariant();
         if (contentType.StartsWith("text/")) return false;
-        if (contentType.Contains("json") || contentType.Contains("xml") || contentType.Contains("html")) return false;
-        // common binary types
-        return contentType.StartsWith("image/") ||
-               contentType.StartsWith("video/") ||
-               contentType.StartsWith("audio/") ||
-               contentType.StartsWith("pdf/") ||
-               contentType.Contains("octet-stream") ||
-               contentType.Contains("application") ||
-               contentType.Contains("multipart/");
+        if (contentType.Contains("json") || contentType.Contains("xml") ||
+            contentType.Contains("html") || contentType.Contains("form-urlencoded")) return false;
+        return true;
     }
 
     private static List<NummyHeader> MaskHeaders(IHeaderDictionary headers, NummyHttpLoggerOptions options)
@@ -109,7 +104,7 @@ internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<N
             var val = value.ToString();
 
             var shouldMask = options.MaskHeaders.Contains(key);
-            
+
             if (shouldMask)
             {
                 val = "[MASKED]";
@@ -134,28 +129,28 @@ internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<N
 
         string? toLog = null;
 
-        // if content is binary or empty, skip
         var ct = context.Request.ContentType;
         var isBinary = IsBinaryContentType(ct);
 
         if (!isBinary)
         {
-            context.Request.EnableBuffering(); // spools to temp file when large
+            context.Request.EnableBuffering();
 
-            // Read only up to MaxBodyLength
             var max = options.MaxBodyLength;
             using var reader = new StreamReader(context.Request.Body, Encoding.UTF8,
                 detectEncodingFromByteOrderMarks: false, bufferSize: 8192, leaveOpen: true);
-            var full = await reader.ReadToEndAsync();
 
-            toLog = full.Length > max ? full[..max] + "...(truncated)" : full;
+            var buffer = new char[max + 1];
+            var charsRead = await reader.ReadBlockAsync(buffer, 0, buffer.Length);
+
+            toLog = charsRead > max
+                ? new string(buffer, 0, max) + "...(truncated)"
+                : new string(buffer, 0, charsRead);
         }
-        
-        // gather extra info
+
         var remoteIp = context.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
         var headers = MaskHeaders(context.Request.Headers, options);
 
-        // fire-and-forget is recommended; for now await but swallow exceptions
         try
         {
             await service.LogRequestAsync(new NummyRequestLog
@@ -172,18 +167,17 @@ internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<N
         }
         catch
         {
-            // swallow
+            // swallow — logged at middleware level
         }
 
-        // rewind request body for downstream middleware
         context.Request.Body.Seek(0, SeekOrigin.Begin);
     }
 
     private static async Task ReadAndLogResponseBodyAsync(
-        HttpContext context, 
+        HttpContext context,
         Stream originalBody,
         MemoryStream bufferStream,
-        Guid httpLogGuid, 
+        Guid httpLogGuid,
         long elapsedMs,
         NummyHttpLoggerOptions options)
     {
@@ -194,7 +188,6 @@ internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<N
         var ct = context.Response.ContentType;
         if (IsBinaryContentType(ct))
         {
-            // Copy response back to original and optionally log only headers/status
             await bufferStream.CopyToAsync(originalBody);
 
             try
@@ -211,20 +204,26 @@ internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<N
             }
             catch
             {
-                /* swallow */
+                // swallow — logged at middleware level
             }
 
             return;
         }
 
-        using var reader = new StreamReader(bufferStream, Encoding.UTF8, detectEncodingFromByteOrderMarks: false,
-            leaveOpen: true);
-        var fullBody = await reader.ReadToEndAsync();
-
         var max = options.MaxBodyLength;
-        var toLog = fullBody.Length > max ? fullBody[..max] + "...(truncated)" : fullBody;
+        string toLog;
 
-        // Important: rewind before copying to the real response stream
+        using (var reader = new StreamReader(bufferStream, Encoding.UTF8, detectEncodingFromByteOrderMarks: false,
+                   leaveOpen: true))
+        {
+            var buffer = new char[max + 1];
+            var charsRead = await reader.ReadBlockAsync(buffer, 0, buffer.Length);
+
+            toLog = charsRead > max
+                ? new string(buffer, 0, max) + "...(truncated)"
+                : new string(buffer, 0, charsRead);
+        }
+
         bufferStream.Seek(0, SeekOrigin.Begin);
         await bufferStream.CopyToAsync(originalBody);
 
@@ -242,7 +241,7 @@ internal sealed class NummyHttpLoggerMiddleware(RequestDelegate next, IOptions<N
         }
         catch
         {
-            // swallow
+            // swallow — logged at middleware level
         }
     }
 }
