@@ -107,7 +107,7 @@ internal sealed class NummyHttpLoggerMiddleware(
 
             if (shouldMask)
             {
-                val = "[MASKED]";
+                val = NummyConstants.MaskedValue;
             }
 
             copiedHeaders.Add(new NummyHeader
@@ -144,7 +144,7 @@ internal sealed class NummyHttpLoggerMiddleware(
             var charsRead = await reader.ReadBlockAsync(buffer, 0, buffer.Length);
 
             toLog = charsRead > max
-                ? new string(buffer, 0, max) + "...(truncated)"
+                ? new string(buffer, 0, max) + NummyConstants.TruncatedSuffix
                 : new string(buffer, 0, charsRead);
         }
 
@@ -155,7 +155,7 @@ internal sealed class NummyHttpLoggerMiddleware(
         {
             await service.LogRequestAsync(new NummyRequestLog
             {
-                Body = isBinary ? "[BINARY CONTENT]" : toLog,
+                Body = isBinary ? NummyConstants.BinaryContentValue : toLog,
                 TraceIdentifier = context.TraceIdentifier,
                 ApplicationId = options.ApplicationId,
                 Method = context.Request.Method,
@@ -195,7 +195,7 @@ internal sealed class NummyHttpLoggerMiddleware(
                 var headers = MaskHeaders(context.Response.Headers, options);
                 await service.LogResponseAsync(new NummyResponseLog
                 {
-                    Body = "[BINARY CONTENT]",
+                    Body = NummyConstants.BinaryContentValue,
                     HttpLogId = httpLogGuid,
                     StatusCode = context.Response.StatusCode,
                     DurationMs = elapsedMs,
@@ -220,7 +220,7 @@ internal sealed class NummyHttpLoggerMiddleware(
             var charsRead = await reader.ReadBlockAsync(buffer, 0, buffer.Length);
 
             toLog = charsRead > max
-                ? new string(buffer, 0, max) + "...(truncated)"
+                ? new string(buffer, 0, max) + NummyConstants.TruncatedSuffix
                 : new string(buffer, 0, charsRead);
         }
 

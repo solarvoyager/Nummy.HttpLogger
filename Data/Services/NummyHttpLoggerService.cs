@@ -13,8 +13,8 @@ internal class NummyHttpLoggerService(
     {
         try
         {
-            using var client = clientFactory.CreateClient(NummyConstants.ClientName);
-            await client.PostAsJsonAsync(NummyConstants.RequestLogAddUrl, requestLog);
+            var client = clientFactory.CreateClient(NummyConstants.ClientName);
+            await client.PostAsJsonAsync(NummyConstants.RequestLogAddUrl, requestLog).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -26,8 +26,8 @@ internal class NummyHttpLoggerService(
     {
         try
         {
-            using var client = clientFactory.CreateClient(NummyConstants.ClientName);
-            await client.PostAsJsonAsync(NummyConstants.ResponseLogAddUrl, responseLog);
+            var client = clientFactory.CreateClient(NummyConstants.ClientName);
+            await client.PostAsJsonAsync(NummyConstants.ResponseLogAddUrl, responseLog).ConfigureAwait(false);
         }
         catch (Exception ex)
         {

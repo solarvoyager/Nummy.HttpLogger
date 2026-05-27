@@ -11,6 +11,9 @@ public static class NummyHttpLoggerServiceExtension
     public static IServiceCollection AddNummyHttpLogger(this IServiceCollection services,
         Action<NummyHttpLoggerOptions> options)
     {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(options);
+
         var httpLoggerOptions = new NummyHttpLoggerOptions();
         options.Invoke(httpLoggerOptions);
 
@@ -23,7 +26,7 @@ public static class NummyHttpLoggerServiceExtension
         services.AddHttpClient(NummyConstants.ClientName, config =>
         {
             config.BaseAddress = new Uri(httpLoggerOptions.NummyServiceUrl!);
-            config.Timeout = TimeSpan.FromSeconds(5);
+            config.Timeout = httpLoggerOptions.HttpClientTimeout;
             config.DefaultRequestHeaders.Clear();
         });
 
@@ -32,6 +35,7 @@ public static class NummyHttpLoggerServiceExtension
 
     public static void UseNummyHttpLogger(this IApplicationBuilder app)
     {
+        ArgumentNullException.ThrowIfNull(app);
         app.UseMiddleware<NummyHttpLoggerMiddleware>();
     }
 }
